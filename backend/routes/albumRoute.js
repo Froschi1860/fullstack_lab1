@@ -1,5 +1,6 @@
 const express = require("express")
-const { getAllAlbums, getAlbumByTitle, createAlbum } = require("../controller/AlbumController")
+const { getAllAlbums, getAlbumByTitle, createAlbum, updateAlbum, deleteAlbum } = require("../controller/AlbumController")
+
 
 const router = express.Router()
 
@@ -11,7 +12,7 @@ router.route("/:title")
   .get(getAlbumByTitle)
 
 router.route("/:id")
-  .put() // Update album
-  .delete() // Delete album
+  .put(updateAlbum)
+  .delete(deleteAlbum)
 
 module.exports = router
