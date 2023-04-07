@@ -1,12 +1,14 @@
 const express = require("express")
+const { getAllAlbums, getAlbumByTitle, createAlbum } = require("../controller/AlbumController")
 
 const router = express.Router()
 
 router.route("/")
-  .get() // Alll albums
-  .post() // Create album
+  .get(getAllAlbums)
+  .post(createAlbum)
 
 router.route("/:title")
+  .get(getAlbumByTitle)
 
 router.route("/:id")
   .put() // Update album

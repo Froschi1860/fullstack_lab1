@@ -2,7 +2,6 @@ const express = require("express")
 const path = require("path")
 const dotenv = require("dotenv").config()
 const { connectDb } = require("./backend/config/db")
-const { Album } = require("./backend/models/albumModel")
 
 connectDb()
 const app = express()
