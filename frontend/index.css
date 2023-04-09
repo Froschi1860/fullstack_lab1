@@ -1,0 +1,12 @@
+td {
+  padding: 10px;
+  border: 1px solid;
+}
+
+.title {
+  width: 30vw;
+}
+
+.artist {
+  width: 20vw;
+}

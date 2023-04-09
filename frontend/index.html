@@ -6,13 +6,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Album collection</title>
+  <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
   <h1>An overview over some great albums:</h1>
-  <table id="album-data">
-    <tr></tr>
-  </table>
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th class="title" scope="col">Title</th>
+          <th class="artist" scope="col">Artist</th>
+          <th scope="col">Year</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="album-data">
+      </tbody>
+    </table>
+    <button id="refresh">Refresh table</button>
+    <button id="new-album">Add new album</button>
+
+  </section>
   <script src="./index.js"></script>
 </body>
 
