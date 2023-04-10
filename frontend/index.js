@@ -12,6 +12,10 @@ async function fetchAllAlbums() {
   return albums
 }
 
+async function createAlbum(album) {
+  let created = await fetch(`http://localhost:${port}/api/albums`)
+}
+
 async function deleteAlbum(id) {
   console.log(`http://localhost:${port}/api/albums/${id}`)
   let deleted = await fetch(`http://localhost:${port}/api/albums/${id}`, {
@@ -58,7 +62,11 @@ function enableDeleteBtns() {
 }
 
 function enableAddBtn() {
-
+  let addBtn = document.getElementById("newAlbum")
+  addBtn.addEventListener("click", e => {
+    showUpdateModal()
+    let form = document.getElementById("newAlbumInfo")
+  })
 }
 
 function enableRefreshBtn() {
@@ -66,5 +74,16 @@ function enableRefreshBtn() {
     await updateAlbumTable()
   })
 }
+
+function showUpdateModal() {
+  document.getElementById("updateModal").style.display = "block"
+  document.getElementById("modalClose").addEventListener("click", (e) => closeUpdateModal())
+}
+
+function closeUpdateModal() {
+  document.getElementById("updateModal").style.display = "none"
+}
+
+window.onclick = (e) => e.target == document.getElementById("updateModal") && closeUpdateModal()
 
 start()
