@@ -35,15 +35,14 @@
       <div class="modal-content">
         <h4>Enter album details</h4>
         <span id="modalClose" class="close">&times;</span>
-        <form id="newAlbumInfo" action="PUT">
-          <label for="title">Title</label>
-          <input type="text" name="title" id="title">
-          <label for="artist">Artist</label>
-          <input type="text" name="artist" id="title">
-          <label for="year">Year</label>
-          <input type="number" name="year" id="year" min="1900" max="2023">
-          <button id="submitForm">Save</button>
-        </form>
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title">
+        <label for="artist">Artist</label>
+        <input type="text" name="artist" id="title">
+        <label for="year">Year</label>
+        <input type="number" name="year" id="year" min="1900" max="2023">
+        <button id="createAlbum">Save new album</button>
+        <button id="updateAlbum">Update existing album</button>
       </div>
 
     </div>

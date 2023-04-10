@@ -1,4 +1,5 @@
 const port = 3000
+let updateId
 
 function start() {
   updateAlbumTable()
@@ -47,7 +48,11 @@ async function updateAlbumTable() {
 function enableUpdateBtns() {
   let btns = document.querySelectorAll(".update-btn")
   btns.forEach(btn => {
-
+    btn.addEventListener("click", e => {
+      updateId = btn.getAttribute("album-id")
+      document.getElementById("updateAlbum").style.display = "inline-block"
+      showUpdateModal()
+    })
   })
 }
 
@@ -65,7 +70,7 @@ function enableAddBtn() {
   let addBtn = document.getElementById("newAlbum")
   addBtn.addEventListener("click", e => {
     showUpdateModal()
-    let form = document.getElementById("newAlbumInfo")
+    document.getElementById("createAlbum").style.display = "inline-block"
   })
 }
 
@@ -82,6 +87,8 @@ function showUpdateModal() {
 
 function closeUpdateModal() {
   document.getElementById("updateModal").style.display = "none"
+  document.getElementById("updateAlbum").style.display = "none"
+  document.getElementById("createAlbum").style.display = "none"
 }
 
 window.onclick = (e) => e.target == document.getElementById("updateModal") && closeUpdateModal()
