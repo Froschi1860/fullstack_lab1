@@ -5,6 +5,7 @@ function start() {
   updateAlbumTable()
   enableRefreshBtn()
   enableAddBtn()
+  enableCreateBtn()
 }
 
 async function fetchAllAlbums() {
@@ -14,7 +15,8 @@ async function fetchAllAlbums() {
 }
 
 async function createAlbum(album) {
-  let created = await fetch(`http://localhost:${port}/api/albums`)
+  let newAlbum = buildAlbumJson()
+  console.log(newAlbum)
 }
 
 async function deleteAlbum(id) {
@@ -28,7 +30,8 @@ async function deleteAlbum(id) {
 async function updateAlbumTable() {
   let albums = await fetchAllAlbums()
   let tbl = document.getElementById("album-data")
-  if (albums.length === 0) return tbl.innerHTML = "<tr><td>No data</td></tr>"
+  tbl.innerHTML = "<tr><td>Loading</td></tr>"
+  if (albums.length === 0) return tbl.innerHTML = "<tr><td>No data saved</td></tr>"
   tbl.innerHTML = ''
   albums.forEach(album => {
     tbl.innerHTML +=
@@ -43,6 +46,17 @@ async function updateAlbumTable() {
       `})
   enableDeleteBtns()
   enableUpdateBtns()
+}
+
+function buildAlbumJson() {
+  let titleField = document.getElementById("title")
+  let artistField = document.getElementById("artist")
+  let yearField = document.getElementById("year")
+  return {
+    title: titleField.value,
+    artist: artistField.value,
+    year: Number.parseInt(yearField.value)
+  }
 }
 
 function enableUpdateBtns() {
@@ -72,6 +86,10 @@ function enableAddBtn() {
     showUpdateModal()
     document.getElementById("createAlbum").style.display = "inline-block"
   })
+}
+
+function enableCreateBtn() {
+  document.getElementById("createAlbum").addEventListener("click", e => createAlbum())
 }
 
 function enableRefreshBtn() {
