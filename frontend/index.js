@@ -9,28 +9,41 @@ function start() {
 }
 
 async function fetchAllAlbums() {
-  let albums = await (await fetch(`http://localhost:${port}/api/albums`)).json()
-  console.log(albums)
-  return albums
+  return await (await fetch(`http://localhost:${port}/api/albums`)).json()
 }
 
-async function createAlbum(album) {
+async function createAlbum() {
   let newAlbum = buildAlbumJson()
-  console.log(newAlbum)
+  let created = await fetch(`http://localhost:${port}/api/albums/`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(newAlbum)
+  })
+  closeUpdateModal()
+  clearUpdateModal()
+  updateAlbumTable()
+  if (created.status === 409) return window.alert("The album already exists.")
+  if (created.status === 201) return window.alert("Successfully created.")
+  return window.alert("An error occured when saving to database.")
+}
+
+async function updateAlbum() {
+
 }
 
 async function deleteAlbum(id) {
-  console.log(`http://localhost:${port}/api/albums/${id}`)
   let deleted = await fetch(`http://localhost:${port}/api/albums/${id}`, {
     method: "DELETE"
   })
-  return deleted
+  if (deleted.status === 404) return window.alert("The album does not exist.")
+  if (created.status === 200) return window.alert("Successfully deleted.")
+  return window.alert("An error occured when deleting from database.")
 }
 
 async function updateAlbumTable() {
-  let albums = await fetchAllAlbums()
   let tbl = document.getElementById("album-data")
   tbl.innerHTML = "<tr><td>Loading</td></tr>"
+  let albums = await fetchAllAlbums()
   if (albums.length === 0) return tbl.innerHTML = "<tr><td>No data saved</td></tr>"
   tbl.innerHTML = ''
   albums.forEach(album => {
@@ -57,6 +70,12 @@ function buildAlbumJson() {
     artist: artistField.value,
     year: Number.parseInt(yearField.value)
   }
+}
+
+function clearUpdateModal() {
+  document.getElementById("title").value = ""
+  document.getElementById("artist").value = ""
+  document.getElementById("year").value = ""
 }
 
 function enableUpdateBtns() {
