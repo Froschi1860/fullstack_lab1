@@ -1,11 +1,12 @@
 const port = 3000
-let updateId
+let updateId, updateTitle, updateArtist, updateYear
 
 function start() {
   updateAlbumTable()
   enableRefreshBtn()
   enableAddBtn()
   enableCreateBtn()
+  enableUpdateBtn()
 }
 
 async function fetchAllAlbums() {
@@ -28,7 +29,18 @@ async function createAlbum() {
 }
 
 async function updateAlbum() {
-
+  let updatedAlbum = buildAlbumJson()
+  let updated = await fetch(`http://localhost:${port}/api/albums/${updateId}`, {
+    method: "PUT",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(updatedAlbum)
+  })
+  closeUpdateModal()
+  clearUpdateModal()
+  updateAlbumTable()
+  if (updated.status === 404) return window.alert("The album does not exist.")
+  if (updated.status === 200) return window.alert("Successfully updated.")
+  return window.alert("An error occured when updating the album.")
 }
 
 async function deleteAlbum(id) {
@@ -36,7 +48,7 @@ async function deleteAlbum(id) {
     method: "DELETE"
   })
   if (deleted.status === 404) return window.alert("The album does not exist.")
-  if (created.status === 200) return window.alert("Successfully deleted.")
+  if (deleted.status === 200) return window.alert("Successfully deleted.")
   return window.alert("An error occured when deleting from database.")
 }
 
@@ -53,7 +65,7 @@ async function updateAlbumTable() {
         <td class="title">${album.title}</td>
         <td class="artist">${album.artist}</td>
         <td>${album.year}</td>
-        <td><button class="update-btn" album-id=${album._id}>Edit</button></td>
+        <td><button class="update-btn" album-id=${album._id} album-title=${album.title} album-artist=${album.artist} album-year=${album.year}>Edit</button></td>
         <td><button class="delete-btn" album-id=${album._id}>Delete</button></td>
       </tr>
       `})
@@ -83,7 +95,14 @@ function enableUpdateBtns() {
   btns.forEach(btn => {
     btn.addEventListener("click", e => {
       updateId = btn.getAttribute("album-id")
+      updateTitle = btn.getAttribute("album-title")
+      updateArtist = btn.getAttribute("album-artist")
+      updateYear = btn.getAttribute("album-year")
       document.getElementById("updateAlbum").style.display = "inline-block"
+      console.log(updateTitle);
+      document.getElementById("title").value = updateTitle
+      document.getElementById("artist").value = updateArtist
+      document.getElementById("year").value = updateYear
       showUpdateModal()
     })
   })
@@ -93,7 +112,7 @@ function enableDeleteBtns() {
   let btns = document.querySelectorAll(".delete-btn")
   btns.forEach(btn => {
     btn.addEventListener("click", async (event) => {
-      let deleted = await deleteAlbum(btn.getAttribute("album-id"))
+      await deleteAlbum(btn.getAttribute("album-id"))
       await updateAlbumTable()
     })
   })
@@ -108,13 +127,15 @@ function enableAddBtn() {
 }
 
 function enableCreateBtn() {
-  document.getElementById("createAlbum").addEventListener("click", e => createAlbum())
+  document.getElementById("createAlbum").addEventListener("click", async e => await createAlbum())
+}
+
+function enableUpdateBtn() {
+  document.getElementById("updateAlbum").addEventListener("click", async e => await updateAlbum())
 }
 
 function enableRefreshBtn() {
-  document.querySelector("#refresh").addEventListener("click", async (event) => {
-    await updateAlbumTable()
-  })
+  document.querySelector("#refresh").addEventListener("click", async (e) => await updateAlbumTable())
 }
 
 function showUpdateModal() {

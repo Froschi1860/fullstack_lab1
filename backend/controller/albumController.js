@@ -52,7 +52,7 @@ const updateAlbum = async (req, res) => {
   if (!verifyAlbum(updateAlbum)) return res.sendStatus(400)
   try {
     const updated = await Album.findOneAndUpdate({ _id: id }, updateAlbum, { new: true })
-    return res.status(201).json(updated)
+    return res.status(200).json(updated)
   } catch (error) {
     console.log(error)
     return res.sendStatus(500)
