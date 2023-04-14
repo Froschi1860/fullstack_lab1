@@ -1,5 +1,5 @@
 const port = 3000
-let updateId, updateTitle, updateArtist, updateYear
+let updateId
 
 function start() {
   updateAlbumTable()
@@ -21,7 +21,6 @@ async function createAlbum() {
     body: JSON.stringify(newAlbum)
   })
   closeUpdateModal()
-  clearUpdateModal()
   updateAlbumTable()
   if (created.status === 409) return window.alert("The album already exists.")
   if (created.status === 201) return window.alert("Successfully created.")
@@ -36,7 +35,6 @@ async function updateAlbum() {
     body: JSON.stringify(updatedAlbum)
   })
   closeUpdateModal()
-  clearUpdateModal()
   updateAlbumTable()
   if (updated.status === 404) return window.alert("The album does not exist.")
   if (updated.status === 200) return window.alert("Successfully updated.")
@@ -62,15 +60,17 @@ async function updateAlbumTable() {
     tbl.innerHTML +=
       `
       <tr>
-        <td class="title">${album.title}</td>
+        <td id=${album._id} class="title">${album.title}</td>
         <td class="artist">${album.artist}</td>
         <td>${album.year}</td>
-        <td><button class="update-btn" album-id=${album._id} album-title=${album.title} album-artist=${album.artist} album-year=${album.year}>Edit</button></td>
+        <td><button class="update-btn" album-id=${album._id}>Update</button></td>
         <td><button class="delete-btn" album-id=${album._id}>Delete</button></td>
+        <td><button class="details-btn" album-id=${album._id}>Show details</button></td>
       </tr>
       `})
   enableDeleteBtns()
   enableUpdateBtns()
+  enableDetailsBtns()
 }
 
 function buildAlbumJson() {
@@ -93,16 +93,16 @@ function clearUpdateModal() {
 function enableUpdateBtns() {
   let btns = document.querySelectorAll(".update-btn")
   btns.forEach(btn => {
-    btn.addEventListener("click", e => {
+    btn.addEventListener("click", async e => {
       updateId = btn.getAttribute("album-id")
-      updateTitle = btn.getAttribute("album-title")
-      updateArtist = btn.getAttribute("album-artist")
-      updateYear = btn.getAttribute("album-year")
+      let albumTitle = document.getElementById(updateId).textContent
+      let album = (await ((await fetch(`http://localhost:${port}/api/albums/${albumTitle}`)).json()))[0]
       document.getElementById("updateAlbum").style.display = "inline-block"
-      console.log(updateTitle);
-      document.getElementById("title").value = updateTitle
-      document.getElementById("artist").value = updateArtist
-      document.getElementById("year").value = updateYear
+      if (album) {
+        document.getElementById("title").value = albumTitle
+        document.getElementById("artist").value = album.artist
+        document.getElementById("year").value = album.year
+      }
       showUpdateModal()
     })
   })
@@ -114,6 +114,16 @@ function enableDeleteBtns() {
     btn.addEventListener("click", async (event) => {
       await deleteAlbum(btn.getAttribute("album-id"))
       await updateAlbumTable()
+    })
+  })
+}
+
+function enableDetailsBtns() {
+  let btns = document.querySelectorAll(".details-btn")
+  btns.forEach(btn => {
+    btn.addEventListener("click", async (event) => {
+      let id = btn.getAttribute("album-id")
+      btn.innerHTML = btn.innerHTML === id ? "Show details" : id
     })
   })
 }
@@ -144,6 +154,7 @@ function showUpdateModal() {
 }
 
 function closeUpdateModal() {
+  clearUpdateModal()
   document.getElementById("updateModal").style.display = "none"
   document.getElementById("updateAlbum").style.display = "none"
   document.getElementById("createAlbum").style.display = "none"
