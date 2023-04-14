@@ -96,7 +96,8 @@ function enableUpdateBtns() {
     btn.addEventListener("click", async e => {
       updateId = btn.getAttribute("album-id")
       let albumTitle = document.getElementById(updateId).textContent
-      let album = (await ((await fetch(`http://localhost:${port}/api/albums/${albumTitle}`)).json()))[0]
+      let album = await ((await fetch(`http://localhost:${port}/api/albums/${albumTitle}`)).json())
+      if (Array.isArray(album)) album = album.find(al => al._id === updateId)
       document.getElementById("updateAlbum").style.display = "inline-block"
       if (album) {
         document.getElementById("title").value = albumTitle

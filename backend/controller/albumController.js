@@ -21,6 +21,7 @@ const getAlbumByTitle = async (req, res) => {
     let albumTitle = req.params.title
     let album = await Album.find({ title: albumTitle })
     if (album.length === 0) return res.status(404).json({ message: `The album titled ${albumTitle} was not found` })
+    if (album.length === 1) return res.json(album[0])
     return res.json(album)
   } catch (error) {
     console.log(error)
