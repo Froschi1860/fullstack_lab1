@@ -10,6 +10,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors({ origin: '*' }))
+app.use(express.static(__dirname + "/frontend"))
 
 // Routing
 app.use("/api/albums", require("./backend/routes/albumRoute"))
